@@ -233,7 +233,7 @@ public class SecondActivity extends ActionBarActivity {
                     }
                 });
             }
-        }, 0L, 18L*100000);
+        }, 0L, 300L*1000);
     }
 
     void startAnalyzingEvery30(){
