@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical"
+    tools:context="ltc.aibotvk.MainActivity">
+
+    <TextView
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/colorBackgroundCW"
+        android:id="@+id/view_logo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="50sp"
+        android:fontFamily="@font/font"
+        android:text="@string/app_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteY="124dp" />
+
+    <Button
+        android:layout_weight="2"
+        android:fontFamily="@font/font"
+        android:id="@+id/btn_log"
+        android:textSize="25sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/btn_style"
+        android:text="@string/authorize"
+        android:textColor="@color/colorBackgroundCW"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.801" />
+
+</LinearLayout>
+

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">AiBot for VK</string>
+    <integer name="com_vk_sdk_AppId">6619285</integer>
+    <string name="first_name">Личное</string>
+    <string name="second_name">Сгенерированное</string>
+    <string name="et_sentence">Предложение</string>
+    <string name="et_answer">Ответ</string>
+    <string name="add_to_personal">Добавить в личную БД</string>
+    <string name="add_to_generated">Добавить в сгенерированную БД</string>
+    <string name="update_generated">Пересоздать сгенерированную БД</string>
+    <string name="switch_personal">Выкл/вкл личного бота</string>
+    <string name="switch_generated">Выкл/вкл сгенерированного бота</string>
+    <string name="com_vk_sdk_ApiVersion">5.38</string>
+    <string name="authorize">Авторизоваться</string>
+    <string name="change_person">Сменить пользователя</string>
+</resources>
+
