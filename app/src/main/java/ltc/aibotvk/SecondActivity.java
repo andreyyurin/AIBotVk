@@ -161,6 +161,8 @@ public class SecondActivity extends ActionBarActivity {
         change_person.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                deleteTableGenerated();
+                deleteTablePersonal();
                 VKSdk.logout();
                 startActivity(new Intent(SecondActivity.this, MainActivity.class));
                 finish();
@@ -375,6 +377,12 @@ public class SecondActivity extends ActionBarActivity {
     // Очистка всей сгенерированной БД
     public static void deleteTableGenerated(){
         Integer numRows = dbHelperGenerated.deleteTable();
+        if(numRows>0) Log.d("DB_DELETE", "true"); else Log.d("DB_DELETE", "false");
+    }
+
+    // Очистка всей личной БД
+    public static void deleteTablePersonal(){
+        Integer numRows = dbHelperPersonal.deleteTable();
         if(numRows>0) Log.d("DB_DELETE", "true"); else Log.d("DB_DELETE", "false");
     }
 

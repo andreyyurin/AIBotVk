@@ -69,4 +69,9 @@ public class DatabaseHelperPersonal extends SQLiteOpenHelper {
         return 1;
     }
 
+    public Integer deleteTable(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_NAME, "ID > 0",null);
+    }
+
 }
