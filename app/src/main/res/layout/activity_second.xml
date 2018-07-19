@@ -34,6 +34,13 @@
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/guillotine_item_text_size" />
             </android.support.v7.widget.Toolbar>
+        <com.victor.loading.rotate.RotateLoading
+            android:id="@+id/rotateloading"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:loading_width="5dp"
+            app:loading_color="#ffffff"
+            android:layout_centerInParent="true"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:id="@+id/relativelayout"
@@ -56,5 +63,6 @@
                 android:layout_below="@id/tab_layout"/>
         </RelativeLayout>
     </RelativeLayout>
+
 
 </FrameLayout>

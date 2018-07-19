@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.util.Pair;
@@ -40,6 +41,8 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import ltc.aibotvk.Adapters.PageAdapter;
 import ltc.aibotvk.Fragments.FrGenerated;
@@ -66,6 +69,7 @@ public class SecondActivity extends ActionBarActivity {
     public static boolean isPersonal = false, isGenerated = false;
     private CheckMessagesTask checkMessagesTask;
     private AnalyzeTask analyzeTask;
+    private AnalyzeTaskEvery30 analyzeTaskEvery30;
     private TestMessagesTask testMessagesTask;
     private ArrayList<String> userIds;
     private RotateLoading rotateLoading;
@@ -84,12 +88,12 @@ public class SecondActivity extends ActionBarActivity {
 
         add_personal = (LinearLayout) guillotineMenu.findViewById(R.id.add_personal);
         add_generated = (LinearLayout) guillotineMenu.findViewById(R.id.add_generated);
-        update_generated = (LinearLayout) guillotineMenu.findViewById(R.id.update_generated);
-        rotateLoading = (RotateLoading) guillotineMenu.findViewById(R.id.rotateloading);
+        //update_generated = (LinearLayout) guillotineMenu.findViewById(R.id.update_generated);
         aSwitchPersonal = (Switch) guillotineMenu.findViewById(R.id.switch_personal);
         aSwitchGenerated = (Switch) guillotineMenu.findViewById(R.id.switch_generated);
         change_person = (LinearLayout) guillotineMenu.findViewById(R.id.change_person);
 
+        rotateLoading = (RotateLoading) findViewById(R.id.rotateloading);
         root = (FrameLayout) findViewById(R.id.root);
         relativeLayout = (RelativeLayout) findViewById(R.id.relativelayout);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
@@ -123,13 +127,13 @@ public class SecondActivity extends ActionBarActivity {
             }
         });
 
-        update_generated.setOnClickListener(new View.OnClickListener() {  // Кнопка перегенерации БД
-            @Override
-            public void onClick(View v) {
-                rotateLoading.start();
-                startAnalyzing();
-            }
-        });
+//        update_generated.setOnClickListener(new View.OnClickListener() {  // Кнопка перегенерации БД
+//            @Override
+//            public void onClick(View v) {
+//                rotateLoading.start();
+//                startAnalyzing();
+//            }
+//        });
 
         //Включение/Выключение личного бота
         aSwitchPersonal.setOnClickListener(new View.OnClickListener() {
@@ -207,14 +211,34 @@ public class SecondActivity extends ActionBarActivity {
 
             }
         });
-     //   getLastMessages();
+
+        startAnalyzing();
+
+
         startChecking();
     }
 
     void startAnalyzing(){ //Начало перегенерации
+        Timer t = new Timer();
+        final Handler uiHandler = new Handler();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        startAnalyzingEvery30();
+                    }
+                });
+            }
+        }, 0L, 18L*100000);
+    }
+
+    void startAnalyzingEvery30(){
+        rotateLoading.start();
         deleteTableGenerated();
-        analyzeTask = new AnalyzeTask();
-        analyzeTask.execute();
+        analyzeTaskEvery30 = new AnalyzeTaskEvery30();
+        analyzeTaskEvery30.execute();
     }
 
     void startChecking(){ // Запуск проверки сообщений
@@ -426,10 +450,10 @@ public class SecondActivity extends ActionBarActivity {
             }
         }
 
-        for(int i = 0; i < dbData.size(); i++){
+        for(int i = 0; i < dbData.size() && i>=0; i++){
             int tmp = 0;
-            for(int j = 0; j<dbData.size(); j++){
-                if(rating[j]>rating[i] && dbData.get(i).getSentence().equals(dbData.get(j).getSentence())){
+            for(int j = 0; j<dbData.size() && j>=0; j++){
+                if(i>=0 && j>=0 && rating[j]>rating[i] && dbData.get(i).getSentence().equals(dbData.get(j).getSentence())){
                     dbData.get(i).setData(dbData.get(j).getSentence(), dbData.get(j).getAnswer());
                     dbData.remove(j);
                     j--;
@@ -523,6 +547,42 @@ public class SecondActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
 
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            rotateLoading.stop();
+        }
+    }
+
+    class AnalyzeTaskEvery30 extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            userIds.clear();
+            getFriends();
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            getFullDialog(Repository.values);
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             return null;
         }
@@ -659,7 +719,7 @@ public class SecondActivity extends ActionBarActivity {
                                       break;
                                   }
                                   if(!changed) changed = true;
-                                  answerMessage.append(messageTemp).append(" ");
+                                  answerMessage.append(messageTemp).append("\n");
                               }else{
                                   if(!changed){
                                       if(findWord(messageTemp)) {
@@ -667,12 +727,12 @@ public class SecondActivity extends ActionBarActivity {
                                           if(sendedMessage.toString().length()>0 && answerMessage.toString().length()>0) insertDataGenerated(sendedMessage.toString(), answerMessage.toString());
                                           break;
                                       }
-                                       sendedMessage.append(messageTemp).append(" ");
+                                       sendedMessage.append(messageTemp).append("\n");
                                   }else{
                                       if(sendedMessage.toString().length()>0 && answerMessage.toString().length()>0) insertDataGenerated(sendedMessage.toString(), answerMessage.toString());
 
                                       answerMessage = new StringBuilder("");
-                                      sendedMessage = new StringBuilder(messageTemp+" ");
+                                      sendedMessage = new StringBuilder(messageTemp+"\n");
                                       changed = false;
                                   }
 
